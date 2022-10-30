@@ -16,9 +16,8 @@ def hourly_scrape():
         schedule.run_pending()
         time.sleep(1)
 
-
 def daily_scrape():
-    schedule.every().hour.do(scrape_and_insert_product)
+    schedule.every().second.do(scrape_and_insert_product)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -46,21 +45,26 @@ def scrape_and_insert_product():
     if nested_scraped_details != None:
         scrape_into_csv(nested_scraped_details[0], nested_scraped_details[1])
 
-
 def scrape_into_csv(energy_details, iex):
-    with open(os.path.join(file_path, "energydetails.csv"), 'w') as file:
+    energydict={}
+    iexdict= {}
+    with open(os.path.join(file_path, "energydetails.csv"), 'a') as file:
         writer = csv.writer(file)
-        writer.writerow(["Energy Demand", "Unit of Electricity"])
         for item in energy_details:
             energy_details_items = item.split(" – ")
-            writer.writerow([energy_details_items[0], energy_details_items[1]])
+            energydict[energy_details_items[0]]=energy_details_items[1]
+        if file.tell() == 0:
+            writer.writerow(energydict.keys())
+        writer.writerow(energydict.values())
 
-    with open(os.path.join(file_path, "iex.csv"), 'w') as file:
+    with open(os.path.join(file_path, "iex.csv"), 'a') as file:
         writer = csv.writer(file)
-        writer.writerow(['Energy details', 'Content'])
         for item in iex:
             iex_items = item.split(' – ')
-            writer.writerow([iex_items[0], iex_items[1]])
+            iexdict[iex_items[0]]=iex_items[1]
+        if file.tell() == 0:
+            writer.writerow(iexdict.keys())
+        writer.writerow(iexdict.values())
 
 
 if __name__ == "__main__":
