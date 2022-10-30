@@ -17,7 +17,7 @@ def hourly_scrape():
         time.sleep(1)
 
 def daily_scrape():
-    schedule.every().second.do(scrape_and_insert_product)
+    schedule.every().day.do(scrape_and_insert_product)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -50,12 +50,23 @@ def scrape_into_csv(energy_details, iex):
     iexdict= {}
     with open(os.path.join(file_path, "energydetails.csv"), 'a') as file:
         writer = csv.writer(file)
+        header_list = list()
+        value_list = list()
         for item in energy_details:
             energy_details_items = item.split(" – ")
             energydict[energy_details_items[0]]=energy_details_items[1]
+
+        for i in range(len(energydict.keys())):
+            item_value = list(energydict.values())[i].split()
+            item_number = int(item_value[0])
+            item_unit = item_value[1]
+            value_list.append(item_number)
+            header = list(energydict.keys())[i]+'('+item_unit+ ')'
+            header_list.append(header)
+
         if file.tell() == 0:
-            writer.writerow(energydict.keys())
-        writer.writerow(energydict.values())
+            writer.writerow(header_list)
+        writer.writerow(value_list)
 
     with open(os.path.join(file_path, "iex.csv"), 'a') as file:
         writer = csv.writer(file)
