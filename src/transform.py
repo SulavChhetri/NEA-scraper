@@ -20,5 +20,5 @@ def main():
 
         item_header_dict[column]= column+'('+item_unit+')'
         energy_details.rename(columns =item_header_dict,inplace=True)
-        energy_details.to_csv(os.path.join(file_path_transformed,'transformed_energy_details.csv'))
+        energy_details.to_csv(os.path.join(file_path_transformed,'transformed_energy_details.csv'),index=False)
 main()
