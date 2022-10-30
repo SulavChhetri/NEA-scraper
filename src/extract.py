@@ -9,6 +9,7 @@ ROOT_DIR = Path(__file__).parent.parent
 
 file_path = os.path.join(ROOT_DIR, 'files')
 
+original_file_path = os.path.join(file_path,'original')
 
 def hourly_scrape():
     schedule.every().hour.do(scrape_and_insert_product)
@@ -48,7 +49,7 @@ def scrape_and_insert_product():
 def scrape_into_csv(energy_details, iex):
     energydict={}
     iexdict= {}
-    with open(os.path.join(file_path, "energydetails.csv"), 'a') as file:
+    with open(os.path.join(original_file_path, "energydetails.csv"), 'a') as file:
         writer = csv.writer(file)
         for item in energy_details:
             energy_details_items = item.split(" – ")
@@ -66,7 +67,7 @@ def scrape_into_csv(energy_details, iex):
             writer.writerow(energydict.keys())
         writer.writerow(energydict.values())
 
-    with open(os.path.join(file_path, "iex.csv"), 'a') as file:
+    with open(os.path.join(original_file_path, "iex.csv"), 'a') as file:
         writer = csv.writer(file)
         for item in iex:
             iex_items = item.split(' – ')
