@@ -6,10 +6,7 @@ import schedule
 from pathlib import Path
 import os
 ROOT_DIR = Path(__file__).parent.parent
-
-file_path = os.path.join(ROOT_DIR, 'files')
-
-original_file_path = os.path.join(file_path,'original')
+original_file_path = os.path.join(ROOT_DIR,'files','original')
 
 def hourly_scrape():
     schedule.every().hour.do(scrape_and_insert_product)
@@ -54,15 +51,6 @@ def scrape_into_csv(energy_details, iex):
         for item in energy_details:
             energy_details_items = item.split(" – ")
             energydict[energy_details_items[0]]=energy_details_items[1]
-
-        # for i in range(len(energydict.keys())):
-        #     item_value = list(energydict.values())[i].split()
-        #     item_number = int(item_value[0])
-        #     item_unit = item_value[1]
-        #     value_list.append(item_number)
-        #     header = list(energydict.keys())[i]+'('+item_unit+ ')'
-        #     header_list.append(header)
-
         if file.tell() == 0:
             writer.writerow(energydict.keys())
         writer.writerow(energydict.values())
@@ -79,4 +67,3 @@ def scrape_into_csv(energy_details, iex):
 
 if __name__ == "__main__":
     daily_scrape()
-    scrape_and_insert_product()
