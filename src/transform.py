@@ -1,6 +1,5 @@
 from calendar import c
 import pandas as pd
-import csv
 import os
 from pathlib import Path
 
@@ -8,11 +7,9 @@ ROOT_DIR = Path(__file__).parent.parent
 file_path_orginal = os.path.join(ROOT_DIR,'files','original')
 file_path_transformed = os.path.join(ROOT_DIR,'files','transformed')
 
-def iex_to_csv():
-    iex_details = pd.read_csv(os.path.join(file_path_orginal,'iex.csv'))
+def iex_to_csv(iex_details):
     iex_header_dict = {'DATE :':'DATE'}
-    columns_list_split = iex_details.columns.values[1:5]
-    for column in columns_list_split:
+    for column in iex_details.columns.values[1:5]:
         for i in range(len(iex_details[column])):
             item_split = iex_details[column][i].split()
             item_number = item_split[0]
@@ -31,11 +28,9 @@ def iex_to_csv():
     iex_details.rename(columns =iex_header_dict,inplace=True)
     iex_details.to_csv(os.path.join(file_path_transformed,'transformed_iex_details.csv'),index=False)
 
-def main():
-    energy_details = pd.read_csv(os.path.join(file_path_orginal,'energydetails.csv'))
-    
-    energy_header_dict = {}
 
+def energy_details_to_csv(energy_details):
+    energy_header_dict = {}
     for column in (energy_details.columns):
         for i in range(len(energy_details[column])):
             item = energy_details[column][i].split()
@@ -46,6 +41,10 @@ def main():
     energy_details.rename(columns =energy_header_dict,inplace=True)
     energy_details.to_csv(os.path.join(file_path_transformed,'transformed_energy_details.csv'),index=False)
 
-    iex_to_csv()
+def main():
+    energy_details = pd.read_csv(os.path.join(file_path_orginal,'energydetails.csv'))
+    iex_details = pd.read_csv(os.path.join(file_path_orginal,'iex.csv'))
+    energy_details_to_csv(energy_details)
+    iex_to_csv(iex_details)
     
-main()
+# main()
